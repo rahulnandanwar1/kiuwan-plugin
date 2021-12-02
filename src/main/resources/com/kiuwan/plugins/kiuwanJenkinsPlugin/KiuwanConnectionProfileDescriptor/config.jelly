@@ -24,12 +24,32 @@
 		</j:if>
 		
 		<f:section title="Connection settings">
-			<f:entry title="Kiuwan account username" field="username" help="/plugin/kiuwanJenkinsPlugin/help/help-username.html">
+		   <f:entry title="Username" field="username" help="/plugin/kiuwanJenkinsPlugin/help/help-username.html">
 				<f:textbox clazz="required" />
-			</f:entry>
-			<f:entry title="Kiuwan account password" field="password" help="/plugin/kiuwanJenkinsPlugin/help/help-password.html">
-				<f:password clazz="required" />
-			</f:entry>
+				</f:entry>
+		    <f:radioBlock  name="kiuwanDetails"  inline="true"
+		      checked="${instance == null || instance.isKiuwanPassword()}" 
+				title="${descriptor.getKiuwanPassword().getDisplayName()}" 
+				value="${descriptor.getKiuwanPassword().getValue()}"
+				help="/plugin/kiuwanJenkinsPlugin/help/help-kiuwanDetails-password.html">
+				 
+				<f:entry title="Password" field="password" help="/plugin/kiuwanJenkinsPlugin/help/help-password.html" >
+				    <f:textbox clazz="required" />
+                </f:entry>
+			</f:radioBlock>
+			
+            <f:radioBlock name="kiuwanDetails" inline="true"
+				checked="${instance != null ? instance.isKiuwanAccessToken() : 'false'}" 
+				title="${descriptor.getKiuwanAccessToken().getDisplayName()}" 
+				value="${descriptor.getKiuwanAccessToken().getValue()}" 
+				help="/plugin/kiuwanJenkinsPlugin/help/help-kiuwanDetails-token.html">
+			 
+				<f:entry title="Token" field="token" help="/plugin/kiuwanJenkinsPlugin/help/help-token.html">
+				   <f:textbox clazz="required" />
+			    </f:entry>
+	         </f:radioBlock>
+	          
+			    
 			<f:entry title="Kiuwan SSO domain" field="domain" help="/plugin/kiuwanJenkinsPlugin/help/help-domain.html">
 				<f:textbox />
 			</f:entry>
@@ -39,10 +59,11 @@
 					<f:textbox />
 				</f:entry>
 			</f:optionalBlock>
-	
+ 
 			<f:validateButton title="Check Credentials" progress="Validating..." method="checkCredentials"
-				with="username,password,domain,configureKiuwanURL,kiuwanURL" />
-		</f:section>
+				with="username,password,token,domain,configureKiuwanURL,kiuwanURL,kiuwanDetails" />
+			
+		  </f:section>
 
 		<f:section title="Proxy for Kiuwan Local Analyzer">
 			<f:radioBlock name="configureProxy" inline="true"

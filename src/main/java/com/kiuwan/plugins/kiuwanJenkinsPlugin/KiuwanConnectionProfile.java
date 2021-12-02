@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.KiuwanAuthenticationDetails;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.KiuwanModelObject;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyMode;
 
@@ -27,6 +28,7 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	private String username;
 	private String password;
 	private String domain;
+	private String token;
 	
 	private boolean configureKiuwanURL;
 	private String kiuwanURL;
@@ -38,6 +40,8 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	private String proxyAuthentication;
 	private String proxyUsername;
 	private String proxyPassword;
+	private String kiuwanDetails = KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS;
+
 	
 	@DataBoundConstructor
 	public KiuwanConnectionProfile() {
@@ -82,10 +86,15 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 		return uuid;
 	}
 	
-	public boolean isConfigureProxyNone() { return ProxyMode.NONE.getValue().equals(configureProxy); }
-	public boolean isConfigureProxyJenkins() { return ProxyMode.JENKINS.getValue().equals(configureProxy); }
+	public boolean isConfigureProxyNone() { 
+		return ProxyMode.NONE.getValue().equals(configureProxy); }
+	public boolean isConfigureProxyJenkins() {
+		return ProxyMode.JENKINS.getValue().equals(configureProxy); }
 	public boolean isConfigureProxyCustom() { return ProxyMode.CUSTOM.getValue().equals(configureProxy); }
-	
+	public boolean isKiuwanPassword() {
+		return KiuwanAuthenticationDetails.PASSWORD.getValue().equals(KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS); }
+	public boolean isKiuwanAccessToken() { 
+		return KiuwanAuthenticationDetails.TOKEN.getValue().equals(KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS); }
 	public String generateUuid() {
 		int length = 8;
 		String randomAlphanumeric = RandomStringUtils.randomAlphanumeric(length);
@@ -109,7 +118,13 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	public String getProxyAuthentication() { return proxyAuthentication; }
 	public String getProxyUsername() { return proxyUsername; }
 	public String getProxyPassword() { return decrypt(proxyPassword); }
-
+	public String getKiuwanDetails() {
+		return kiuwanDetails;
+	}
+	public String getToken() {
+		return token;
+	}
+	
 	@DataBoundSetter public void setUuid(String uuid) { this.uuid = uuid; }
 	@DataBoundSetter public void setName(String name) { this.name = name; }
 	@DataBoundSetter public void setUsername(String username) { this.username = username; }
@@ -124,7 +139,16 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	@DataBoundSetter public void setProxyAuthentication(String proxyAuthentication) { this.proxyAuthentication = proxyAuthentication; }
 	@DataBoundSetter public void setProxyUsername(String proxyUsername) { this.proxyUsername = proxyUsername; }
 	@DataBoundSetter public void setProxyPassword(String proxyPassword) { this.proxyPassword = encrypt(proxyPassword); }
-	
+
+	@DataBoundSetter
+	public void setKiuwanDetails(String kiuwanDetails) {
+		this.kiuwanDetails = kiuwanDetails;
+	}
+
+	@DataBoundSetter
+	public void setToken(String token) {
+		this.token = token;
+	}
 	private static String encrypt(String value) {
 		return Secret.fromString(value).getEncryptedValue();
 	}

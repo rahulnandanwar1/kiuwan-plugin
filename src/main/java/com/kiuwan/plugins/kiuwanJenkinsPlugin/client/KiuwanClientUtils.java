@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 
+import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.KiuwanAuthenticationDetails;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyAuthentication;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyConfig;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.util.KiuwanUtils;
@@ -20,11 +21,12 @@ public class KiuwanClientUtils {
 	 * @param kiuwanURL the URL where Kiuwan is deployed, only inspected if <code>isConfigureKiuwanURL</code> is <code>true</code>
 	 * @param username the configured Kiuwan account's username
 	 * @param password the configured Kiuwan account's password
+	 * @param token the configured Kiuwan account's token
 	 * @param domain the configured Kiuwan account's domain 
 	 * @return a {@link ApiClient} object ready to use
 	 */
 	public static ApiClient instantiateClient(boolean isConfigureKiuwanURL, String kiuwanURL, 
-			String username, String password, String domain) {
+			String username, String password, String token, String domain, boolean kiuwanDetails) {
 		
 		if (isConfigureKiuwanURL)  {
 			try {
@@ -35,14 +37,24 @@ public class KiuwanClientUtils {
 			}
 		}
 		
-		ApiClient apiClient = Configuration
-			.newClient(isConfigureKiuwanURL, kiuwanURL)
-			.withBasicAuthentication(username, password)
-			.withDomain(domain);
-		
+		ApiClient apiClient = new ApiClient();
+
+		String selectedAuthentication = KiuwanAuthenticationDetails.valueFrom(Boolean.toString(kiuwanDetails))
+				.getDisplayName();
+
+		if (selectedAuthentication.contains("token")) {
+			apiClient = Configuration.newClient(isConfigureKiuwanURL, kiuwanURL)
+					.withTokenAuthentication(username, token).withDomain(domain);
+		} else {
+			apiClient = Configuration.newClient(isConfigureKiuwanURL, kiuwanURL)
+					.withBasicAuthentication(username, password).withDomain(domain);
+		}
 		URL basePathURL = null;
+
+		
 		try {
 			basePathURL = new URL(apiClient.getBasePath());
+
 		} catch (MalformedURLException e) {
 			logger().log(Level.WARNING, "Could not create URL to setup proxy: " + e.getLocalizedMessage());
 		}

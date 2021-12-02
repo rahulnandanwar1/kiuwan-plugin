@@ -15,6 +15,7 @@ import org.kohsuke.stapler.QueryParameter;
 
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.client.KiuwanClientException;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.client.KiuwanClientUtils;
+import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.KiuwanAuthenticationDetails;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyAuthentication;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyMode;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyProtocol;
@@ -36,6 +37,8 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnectionProfile> {
 
 	public static final String DEFAULT_CONFIGURE_PROXY = ProxyMode.NONE.getValue();
+	public static final String DEFAULT_AUTHENTICATION_DETAILS = KiuwanAuthenticationDetails.PASSWORD.getValue();
+
 	public static final int DEFAULT_PROXY_PORT = 3128;
 	
 	public KiuwanConnectionProfileDescriptor() {
@@ -50,6 +53,8 @@ public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnecti
 	public ProxyMode getConfigureProxyNone() { return ProxyMode.NONE; }
 	public ProxyMode getConfigureProxyJenkins() { return ProxyMode.JENKINS; }
 	public ProxyMode getConfigureProxyCustom() { return ProxyMode.CUSTOM; }
+	public KiuwanAuthenticationDetails getKiuwanAccessToken() { return KiuwanAuthenticationDetails.TOKEN; }
+	public KiuwanAuthenticationDetails getKiuwanPassword() { return KiuwanAuthenticationDetails.PASSWORD; }
 	
 	public FormValidation doCheckName(@QueryParameter("name") String name) {
 		if (StringUtils.isEmpty(name)) {
@@ -100,8 +105,8 @@ public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnecti
 	@RequirePOST
 	public FormValidation doCheckCredentials(@AncestorInPath Item item,
 			@QueryParameter String username,
-			@QueryParameter String password, @QueryParameter String domain,
-			@QueryParameter boolean configureKiuwanURL, @QueryParameter String kiuwanURL) {
+			@QueryParameter String password,@QueryParameter String token, @QueryParameter String domain,
+			@QueryParameter boolean configureKiuwanURL, @QueryParameter String kiuwanURL, @QueryParameter boolean kiuwanDetails) {
 
 		if (item == null) {
 			if (!Objects.requireNonNull(Jenkins.getInstance()).hasPermission(Jenkins.ADMINISTER)) {
@@ -115,13 +120,14 @@ public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnecti
 		String customerEngineVersion = null;
 		String credentialsErrorMessage = null;
 		try {
-			ApiClient client = KiuwanClientUtils.instantiateClient(configureKiuwanURL, kiuwanURL, username, password, domain);
+			ApiClient client = KiuwanClientUtils.instantiateClient(configureKiuwanURL, kiuwanURL, username, password, token, domain, kiuwanDetails);
 			InformationApi api = new InformationApi(client);
 			UserInformationResponse information = api.getInformation();
 			customerEngineVersion = hudson.Util.xmlEscape(information.getEngineVersion() +
 					(information.isEngineFrozen() ? " [FROZEN]" : ""));
 			
-		} catch (ApiException e) {
+		}
+		catch (ApiException e) {
 			KiuwanClientException krce = KiuwanClientException.from(e);
 			KiuwanUtils.logger().log(Level.WARNING, krce.toString());
 			Throwable rootCause = ExceptionUtils.getRootCause(krce);
@@ -156,6 +162,7 @@ public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnecti
 		// Success
 		FormValidation formValidation = null;
 		if (customerEngineVersion != null && currentKlaVersion != null) {
+
 			formValidation = FormValidation.okWithMarkup("Authentication completed successfully.<ul>" + 
 				"<li>Current Kiuwan Local Analyzer version: <b>" + currentKlaVersion + "</b>.</li>" + 
 				"<li>Current Kiuwan Engine version: <b>" + customerEngineVersion + "</b>.</li></ul>");

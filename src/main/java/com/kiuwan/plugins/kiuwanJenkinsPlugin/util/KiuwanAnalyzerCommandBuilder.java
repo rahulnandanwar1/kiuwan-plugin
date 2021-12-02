@@ -26,6 +26,7 @@ import com.kiuwan.plugins.kiuwanJenkinsPlugin.KiuwanRecorder;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.KiuwanRecorderDescriptor;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ChangeRequestStatusType;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.DeliveryType;
+import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.KiuwanAuthenticationDetails;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.Measure;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.Mode;
 import com.kiuwan.plugins.kiuwanJenkinsPlugin.model.ProxyConfig;
@@ -163,8 +164,19 @@ public class KiuwanAnalyzerCommandBuilder {
 
 		args.add("--user");
 		args.add(buildArgument(launcher, connectionProfile.getUsername()));
-		args.add("--pass");
-		args.add(buildArgument(launcher, connectionProfile.getPassword()));
+		
+		String selectedAuthentication = KiuwanAuthenticationDetails.valueFrom(connectionProfile.getKiuwanDetails()).getDisplayName();
+		
+		if (selectedAuthentication.contains("token")) {
+			args.add("--token");
+			args.add(buildArgument(launcher, connectionProfile.getToken()));
+
+		} else {
+			args.add("--pass");
+			args.add(buildArgument(launcher, connectionProfile.getPassword()));
+		}
+		
+		
 		
 		String domain = connectionProfile.getDomain();
 		if(StringUtils.isNotBlank(domain)) {
@@ -277,6 +289,10 @@ public class KiuwanAnalyzerCommandBuilder {
 			if ("--user".equals(args.get(i)) || "--pass".equals(args.get(i))) {
 				mask = true;
 			} else if (args.get(i).contains("username") || args.get(i).contains("password")) {
+				masks[i] = true;
+			}else if ("--user".equals(args.get(i)) || "--token".equals(args.get(i))) {
+				mask = true;
+			} else if (args.get(i).contains("username") || args.get(i).contains("token")) {
 				masks[i] = true;
 			} else {
 				mask = false;
