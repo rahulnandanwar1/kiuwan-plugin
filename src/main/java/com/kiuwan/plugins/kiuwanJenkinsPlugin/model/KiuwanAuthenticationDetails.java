@@ -15,17 +15,6 @@ public enum KiuwanAuthenticationDetails implements KiuwanModelObject {
 		this.value = value;
 	}
 
-	public static KiuwanAuthenticationDetails valueFrom(String value) {
-		KiuwanAuthenticationDetails matchingKiuwanAuthenticationDetails = null;
-		for (KiuwanAuthenticationDetails authenticationDetails : KiuwanAuthenticationDetails.values()) {
-			if (authenticationDetails.getValue().equals(value)) {
-				matchingKiuwanAuthenticationDetails = authenticationDetails;
-				break;
-			}
-		}
-		return matchingKiuwanAuthenticationDetails;
-	}
-
 	@Override
 	public String getDisplayName() {
 		return this.displayName;

@@ -40,9 +40,10 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	private String proxyAuthentication;
 	private String proxyUsername;
 	private String proxyPassword;
-	private String kiuwanDetails = KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS;
+	private String kiuwanAuthenticationType = KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS;
 
 	
+
 	@DataBoundConstructor
 	public KiuwanConnectionProfile() {
 		super();
@@ -118,11 +119,12 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	public String getProxyAuthentication() { return proxyAuthentication; }
 	public String getProxyUsername() { return proxyUsername; }
 	public String getProxyPassword() { return decrypt(proxyPassword); }
-	public String getKiuwanDetails() {
-		return kiuwanDetails;
-	}
+	
 	public String getToken() {
 		return token;
+	}
+	public String getKiuwanAuthenticationType() {
+		return kiuwanAuthenticationType;
 	}
 	
 	@DataBoundSetter public void setUuid(String uuid) { this.uuid = uuid; }
@@ -139,11 +141,12 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 	@DataBoundSetter public void setProxyAuthentication(String proxyAuthentication) { this.proxyAuthentication = proxyAuthentication; }
 	@DataBoundSetter public void setProxyUsername(String proxyUsername) { this.proxyUsername = proxyUsername; }
 	@DataBoundSetter public void setProxyPassword(String proxyPassword) { this.proxyPassword = encrypt(proxyPassword); }
-
+	
 	@DataBoundSetter
-	public void setKiuwanDetails(String kiuwanDetails) {
-		this.kiuwanDetails = kiuwanDetails;
+	public void setKiuwanAuthenticationType(String kiuwanAuthenticationType) {
+		this.kiuwanAuthenticationType = kiuwanAuthenticationType;
 	}
+	
 
 	@DataBoundSetter
 	public void setToken(String token) {

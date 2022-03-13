@@ -27,22 +27,22 @@
 		   <f:entry title="Username" field="username" help="/plugin/kiuwanJenkinsPlugin/help/help-username.html">
 				<f:textbox clazz="required" />
 				</f:entry>
-		    <f:radioBlock  name="kiuwanDetails"  inline="true"
+		    <f:radioBlock  name="kiuwanAuthenticationType"  inline="true"
 		      checked="${instance == null || instance.isKiuwanPassword()}" 
 				title="${descriptor.getKiuwanPassword().getDisplayName()}" 
 				value="${descriptor.getKiuwanPassword().getValue()}"
-				help="/plugin/kiuwanJenkinsPlugin/help/help-kiuwanDetails-password.html">
+				help="/plugin/kiuwanJenkinsPlugin/help/help-KiuwanAuthenticationType-password.html">
 				 
 				<f:entry title="Password" field="password" help="/plugin/kiuwanJenkinsPlugin/help/help-password.html" >
 				    <f:textbox clazz="required" />
                 </f:entry>
 			</f:radioBlock>
 			
-            <f:radioBlock name="kiuwanDetails" inline="true"
+            <f:radioBlock name="kiuwanAuthenticationType" inline="true"
 				checked="${instance != null ? instance.isKiuwanAccessToken() : 'false'}" 
 				title="${descriptor.getKiuwanAccessToken().getDisplayName()}" 
 				value="${descriptor.getKiuwanAccessToken().getValue()}" 
-				help="/plugin/kiuwanJenkinsPlugin/help/help-kiuwanDetails-token.html">
+				help="/plugin/kiuwanJenkinsPlugin/help/help-KiuwanAuthenticationType-token.html">
 			 
 				<f:entry title="Token" field="token" help="/plugin/kiuwanJenkinsPlugin/help/help-token.html">
 				   <f:textbox clazz="required" />
@@ -61,7 +61,7 @@
 			</f:optionalBlock>
  
 			<f:validateButton title="Check Credentials" progress="Validating..." method="checkCredentials"
-				with="username,password,token,domain,configureKiuwanURL,kiuwanURL,kiuwanDetails" />
+				with="username,password,token,domain,configureKiuwanURL,kiuwanURL,kiuwanAuthenticationType" />
 			
 		  </f:section>
 

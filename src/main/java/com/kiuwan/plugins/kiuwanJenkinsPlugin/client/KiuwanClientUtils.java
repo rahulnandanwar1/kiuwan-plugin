@@ -23,10 +23,11 @@ public class KiuwanClientUtils {
 	 * @param password the configured Kiuwan account's password
 	 * @param token the configured Kiuwan account's token
 	 * @param domain the configured Kiuwan account's domain 
+	 * @param kiuwanAuthenticationType selection of the authentication type for kiuwan like password/token 
 	 * @return a {@link ApiClient} object ready to use
 	 */
 	public static ApiClient instantiateClient(boolean isConfigureKiuwanURL, String kiuwanURL, 
-			String username, String password, String token, String domain, boolean kiuwanDetails) {
+			String username, String password, String token, String domain, boolean kiuwanAuthenticationType) {
 		
 		if (isConfigureKiuwanURL)  {
 			try {
@@ -39,8 +40,14 @@ public class KiuwanClientUtils {
 		
 		ApiClient apiClient = new ApiClient();
 
-		String selectedAuthentication = KiuwanAuthenticationDetails.valueFrom(Boolean.toString(kiuwanDetails))
-				.getDisplayName();
+		String selectedAuthentication = "";
+
+		for (KiuwanAuthenticationDetails authenticationDetails : KiuwanAuthenticationDetails.values()) {
+			if (authenticationDetails.getValue().equals(Boolean.toString(kiuwanAuthenticationType))) {
+				selectedAuthentication = authenticationDetails.getDisplayName();
+				break;
+			}
+		}
 
 		if (selectedAuthentication.contains("token")) {
 			apiClient = Configuration.newClient(isConfigureKiuwanURL, kiuwanURL)

@@ -165,8 +165,14 @@ public class KiuwanAnalyzerCommandBuilder {
 		args.add("--user");
 		args.add(buildArgument(launcher, connectionProfile.getUsername()));
 		
-		String selectedAuthentication = KiuwanAuthenticationDetails.valueFrom(connectionProfile.getKiuwanDetails()).getDisplayName();
-		
+		String selectedAuthentication = "";
+
+		for (KiuwanAuthenticationDetails authenticationDetails : KiuwanAuthenticationDetails.values()) {
+			if (authenticationDetails.getValue().equals(connectionProfile.getKiuwanAuthenticationType())) {
+				selectedAuthentication = authenticationDetails.getDisplayName();
+				break;
+			}
+		}		
 		if (selectedAuthentication.contains("token")) {
 			args.add("--token");
 			args.add(buildArgument(launcher, connectionProfile.getToken()));

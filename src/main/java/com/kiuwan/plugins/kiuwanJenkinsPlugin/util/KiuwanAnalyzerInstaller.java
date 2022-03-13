@@ -231,7 +231,7 @@ public class KiuwanAnalyzerInstaller {
 		try {
 			ApiClient client = KiuwanClientUtils.instantiateClient(
 				connectionProfile.isConfigureKiuwanURL(), connectionProfile.getKiuwanURL(),
-				connectionProfile.getUsername(), connectionProfile.getPassword(), connectionProfile.getToken(), connectionProfile.getDomain(), Boolean.parseBoolean(connectionProfile.getKiuwanDetails()));
+				connectionProfile.getUsername(), connectionProfile.getPassword(), connectionProfile.getToken(), connectionProfile.getDomain(), Boolean.parseBoolean(connectionProfile.getKiuwanAuthenticationType()));
 			InformationApi infoApi = new InformationApi(client);
 			UserInformationResponse userInfo = infoApi.getInformation();
 			remoteEngineVersion = userInfo.getEngineVersion();

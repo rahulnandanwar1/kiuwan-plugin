@@ -106,7 +106,7 @@ public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnecti
 	public FormValidation doCheckCredentials(@AncestorInPath Item item,
 			@QueryParameter String username,
 			@QueryParameter String password,@QueryParameter String token, @QueryParameter String domain,
-			@QueryParameter boolean configureKiuwanURL, @QueryParameter String kiuwanURL, @QueryParameter boolean kiuwanDetails) {
+			@QueryParameter boolean configureKiuwanURL, @QueryParameter String kiuwanURL, @QueryParameter boolean kiuwanAuthenticationType) {
 
 		if (item == null) {
 			if (!Objects.requireNonNull(Jenkins.getInstance()).hasPermission(Jenkins.ADMINISTER)) {
@@ -120,7 +120,7 @@ public class KiuwanConnectionProfileDescriptor extends Descriptor<KiuwanConnecti
 		String customerEngineVersion = null;
 		String credentialsErrorMessage = null;
 		try {
-			ApiClient client = KiuwanClientUtils.instantiateClient(configureKiuwanURL, kiuwanURL, username, password, token, domain, kiuwanDetails);
+			ApiClient client = KiuwanClientUtils.instantiateClient(configureKiuwanURL, kiuwanURL, username, password, token, domain, kiuwanAuthenticationType);
 			InformationApi api = new InformationApi(client);
 			UserInformationResponse information = api.getInformation();
 			customerEngineVersion = hudson.Util.xmlEscape(information.getEngineVersion() +
