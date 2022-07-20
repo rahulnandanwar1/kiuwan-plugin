@@ -93,9 +93,9 @@ public class KiuwanConnectionProfile implements Describable<KiuwanConnectionProf
 		return ProxyMode.JENKINS.getValue().equals(configureProxy); }
 	public boolean isConfigureProxyCustom() { return ProxyMode.CUSTOM.getValue().equals(configureProxy); }
 	public boolean isKiuwanPassword() {
-		return KiuwanAuthenticationDetails.PASSWORD.getValue().equals(KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS); }
+		return KiuwanAuthenticationDetails.PASSWORD.getValue().equals(kiuwanAuthenticationType); }
 	public boolean isKiuwanAccessToken() { 
-		return KiuwanAuthenticationDetails.TOKEN.getValue().equals(KiuwanConnectionProfileDescriptor.DEFAULT_AUTHENTICATION_DETAILS); }
+		return KiuwanAuthenticationDetails.TOKEN.getValue().equals(kiuwanAuthenticationType); }
 	public String generateUuid() {
 		int length = 8;
 		String randomAlphanumeric = RandomStringUtils.randomAlphanumeric(length);
